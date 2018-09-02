@@ -1,6 +1,7 @@
 import copy
 
 letters=list(["F","W","N","G","M","N","U","T","A","U","F","G"])
+uniqletters=set(letters)
 musthave=list(["A","U"])
 invalidcombies=list(["UU","AA","FW","FN","FG","FM","WW","WF","WN","WG","WM","WT","NW","GF","GG","GT"])
 wlen=5
@@ -30,6 +31,10 @@ class position (object):
 class words(object):
 	def __init__(self,letters,wlen,musthave,invalidcombies):
 		self.__letterlist=letters
+		#Is some work around - set makes the whole thing uniq, but positions class 
+		#uses indexes and set does not support does -> that's why it becomes list
+		#again
+		self.__uniqletterlist=list(set(self.__letterlist))
 		self.__positions=list()
 		self.__musthaves=musthave
 		self.__invalidcombies=invalidcombies
@@ -37,7 +42,7 @@ class words(object):
 
 		for i in range(self.__wlen):
 			posindex=i-1
-			self.__positions.append(position(letters))	
+			self.__positions.append(position(self.__uniqletterlist))	
 			if posindex>0:
 				self.__positions[posindex-1].set_follower(self.__positions[posindex])
 		self.__positions[len(self.__positions)-2].set_follower(self.__positions[len(self.__positions)-1])
@@ -77,9 +82,3 @@ class words(object):
 masterword=words(letters,wlen,musthave,invalidcombies)
 while True:
 	masterword.next()
-#while True:
-#	word=""
-#	for position in positions:
-#		word+=position.get()
-#	print (word)
-#	positions[0].next()
