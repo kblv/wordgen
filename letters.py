@@ -12,7 +12,6 @@ class position (object):
 		self.__letterlist=letterlist
 		self.__follow_position=None
 		self.__current_letterpos=0
-		self.__completed_once=False
 		
 	def set_follower(self,follower):
 		self.__follow_position=follower
@@ -21,7 +20,6 @@ class position (object):
 		if self.__current_letterpos+1 == len(self.__letterlist):
 			self.__current_letterpos=0
 			self.__follow_position.next()
-			self.__completed_once=True
 		else:
 			self.__current_letterpos+=1
 
@@ -101,4 +99,11 @@ class parameters(object):
 parameters().export()
 masterword=words(letters,wlen,musthave,invalidcombies)
 while True:
-	masterword.next()
+	#If all positions have been checked the last position will call its next-method
+	#resulting in AttributeError as follower will be None
+	#Not the cleanest way to signal all possible combinations have been checked -
+	#but the fastest :)
+	try:
+		masterword.next()
+	except AttributeError:
+		exit()	
