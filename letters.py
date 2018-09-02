@@ -1,10 +1,10 @@
 import copy
+import argparse
 
-letters=list(["F","W","N","G","M","N","U","T","A","U","F","G"])
-uniqletters=set(letters)
-musthave=list(["A","U"])
-invalidcombies=list(["UU","AA","FW","FN","FG","FM","WW","WF","WN","WG","WM","WT","NW","GF","GG","GT"])
-wlen=5
+letters=list()
+musthave=list()
+invalidcombies=list()
+wlen=int()
 positions=list()
 
 class position (object):
@@ -74,11 +74,31 @@ class words(object):
 		for position in self.__positions:
 			word+=position.get()
 		if self.__validate(word) and self.__checkmusthaves(word) and self.__checkinvalidcombies(word):
-			print ("Wort:", word)
+			print (word)
 		self.__positions[0].next()		
 	
 	
 
+class parameters(object):
+	def __init__(self):
+		self.__parser=argparse.ArgumentParser("Simple wordlist generator")
+		self.__parser.add_argument("-c",required=True, dest="letters",nargs="+",help="Characters - Specifies all allowed characters - if letter is allowed twice, it needs to be given twice. \n Letters need to be given with spaces in between -> -c A B C")
+		self.__parser.add_argument("-l",required=True, dest="wlen",type=int,action="store",help="Length - Length of the word")
+		self.__parser.add_argument("-m", dest="musthave",default="", nargs="+",help="Musthave - List of charactersequences/characters which need to appear. \n Single sequences separated by space.")
+		self.__parser.add_argument("-n", dest="invalidcombies",default="",nargs="+",help="Not - List of charactersequences which should be excluded \n Single sequences separated by space.")
+	def export(self):
+		global letters
+		global musthave
+		global invalidcombies 
+		global wlen
+		arguments=self.__parser.parse_args()
+		letters=arguments.letters
+		musthave=arguments.musthave
+		invalidcombies=arguments.invalidcombies
+		wlen=arguments.wlen
+		
+
+parameters().export()
 masterword=words(letters,wlen,musthave,invalidcombies)
 while True:
 	masterword.next()
