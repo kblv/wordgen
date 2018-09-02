@@ -27,12 +27,22 @@ class position (object):
 	def get(self):
 		return self.__letterlist[self.__current_letterpos]
 
-class word(object):
-	def __init__(self,letters,positions,musthave,invalidcombies):
+class words(object):
+	def __init__(self,letters,wlen,musthave,invalidcombies):
 		self.__letterlist=letters
-		self.__positions=positions
+		self.__positions=list()
 		self.__musthaves=musthave
 		self.__invalidcombies=invalidcombies
+		self.__wlen=wlen
+
+		for i in range(self.__wlen):
+			posindex=i-1
+			self.__positions.append(position(letters))	
+			if posindex>0:
+				self.__positions[posindex-1].set_follower(self.__positions[posindex])
+		self.__positions[len(self.__positions)-2].set_follower(self.__positions[len(self.__positions)-1])
+
+
 	def __validate(self,word):
 		tmpletterlist=copy.copy(self.__letterlist)
 		for char in word:
@@ -62,17 +72,10 @@ class word(object):
 			print ("Wort:", word)
 		self.__positions[0].next()		
 	
-for i in range(wlen):
-	posindex=i-1
-	positions.append(position(letters))	
-	#if i < wlen and posindex>0:
-	if posindex>0:
-		positions[posindex-1].set_follower(positions[posindex])
-positions[len(positions)-2].set_follower(positions[len(positions)-1])
 	
 
+masterword=words(letters,wlen,musthave,invalidcombies)
 while True:
-	masterword=word(letters,positions,musthave,invalidcombies)
 	masterword.next()
 #while True:
 #	word=""
